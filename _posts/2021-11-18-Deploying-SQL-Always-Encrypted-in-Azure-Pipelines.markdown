@@ -8,22 +8,7 @@ categories: SQL CI-CD DevOps Azure-DevOps AzDOs Always-Encrypted
 I've been working with a customer recently who is using SQL Server Always Encrypted on their database to secure database contents.
 They are moving to an automated build/release pipeline for their product, and as such needed a way of deploying their databases as part of this pipeline. Broadly speaking, their application consisted of a website hosted in IIS, and databases hosted on a separate Microsoft SQL Server. The Always Encrypted keys were created from a certificate, which was deployed to the IIS server (the IIS app pool was granted access to this certificate).
 
-{% mermaid %}
-flowchart LR;
-  subgraph webserver
-  website
-  encryption-cert
-  end
-  subgraph dbserver
-  database
-  encryption-keys
-  end
-
-  website-->encryption-cert
-  website-->database
-  database-->encryption-keys
-  encryption-keys-->encryption-cert
-{% endmermaid %}
+![Diagram of system architecture showing relation between website, database, encryption cert, and encryption keys](/assets/images/Architecture.png)
 
 We settled quite early on on using DAC packages (https://docs.microsoft.com/en-us/sql/relational-databases/data-tier-applications/data-tier-applications?view=sql-server-ver15#dac-concepts) to deploy the databases out.
 There's a few advantages to these: 
