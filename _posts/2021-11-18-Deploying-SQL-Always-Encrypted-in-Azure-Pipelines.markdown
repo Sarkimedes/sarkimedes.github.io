@@ -8,7 +8,7 @@ categories: SQL CI-CD DevOps Azure-DevOps AzDOs Always-Encrypted
 I've been working with a customer recently who is using SQL Server Always Encrypted on their database to secure database contents.
 They are moving to an automated build/release pipeline for their product, and as such needed a way of deploying their databases as part of this pipeline. Broadly speaking, their application consisted of a website hosted in IIS, and databases hosted on a separate Microsoft SQL Server. The Always Encrypted keys were created from a certificate, which was deployed to the IIS server (the IIS app pool was granted access to this certificate).
 
-![Diagram of system architecture showing relation between website, database, encryption cert, and encryption keys](/_site/assets/images/Architecture.png)
+![Diagram of system architecture showing relation between website, database, encryption cert, and encryption keys](/assets/images/Architecture.PNG)
 
 We settled quite early on on using DAC packages (https://docs.microsoft.com/en-us/sql/relational-databases/data-tier-applications/data-tier-applications?view=sql-server-ver15#dac-concepts) to deploy the databases out.
 There's a few advantages to these: 
@@ -29,7 +29,7 @@ The issue comes in because in order to bind the cert up to the encryption key, w
 The solution to that is to split the dacpac so that it would first ensure the database existed, but do nothing else. Then we could create encyrption keys using a separate step, before running the DACPAC to deploy the rest of the artifact.
 The only solution I found for that was to create a second database project inside Visual Studio, and add a same database reference to the first database project:
 
-![Screenshot of Visual Studio showing Add Database Reference window. The reference is set to another database project in the current solution. The database location is set to "Same Database"](/_site/assets/images/AddDBReference.png)
+![Screenshot of Visual Studio showing Add Database Reference window. The reference is set to another database project in the current solution. The database location is set to "Same Database"](/assets/images/AddDBReference.PNG)
 
 Note that using deployment profiles instead doesn't work, because we also wanted to stop the "minimal" deployment from running post-deployment scripts.
 Building this will create a second DACPAC that did nothing but ensure the DB existed.
