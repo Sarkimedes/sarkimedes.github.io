@@ -26,13 +26,13 @@ What it won't allow us to do is to create a certificate to use with a column enc
 The database must also exist before an encryption key can be created, and the certificate must exist at the time the key is created.
 The issue comes in because in order to bind the cert up to the encryption key, we found we needed to create the key outside of the DACPAC. This leads to a bit of a chicken-and-egg situation as the current model attempts to create the database and the columns immediately after each other which fails as there is no encryption key at that point, while creating the encryption key would fail as the database doesn't exist.
 
-The solution to that is to split the dacpac so that it would first ensure the database existed, but do nothing else. Then we could create encyrption keys using a separate step, before running the DACPAC to deploy the rest of the artifact.
+The solution to that is to split the dacpac so that it would first ensure the database existed, but do nothing else. Then we could create encryption keys using a separate step, before running the DACPAC to deploy the rest of the artifact.
 The only solution I found for that was to create a second database project inside Visual Studio, and add a same database reference to the first database project:
 
 ![Screenshot of Visual Studio showing Add Database Reference window. The reference is set to another database project in the current solution. The database location is set to "Same Database"](/assets/images/AddDBReference.PNG)
 
 Note that using deployment profiles instead doesn't work, because we also wanted to stop the "minimal" deployment from running post-deployment scripts.
-Building this will create a second DACPAC that did nothing but ensure the DB existed.
+Building this will create a second DACPAC that does nothing but ensure the DB exists.
 
 Additionally, there's some oddities with how query parameters have to be set up in order to insert data into a table encrypted using Always Encrypted, which can't be done using a post-deployment script in a DACPAC. 
 The solution to that is to use a separate script to insert data instead of the post-deployment script - in this case we used PowerShell which called into the System.Data.SqlClient library. This was so we could pass SQL parameters in, which is a requirement when working with encrypted data.
