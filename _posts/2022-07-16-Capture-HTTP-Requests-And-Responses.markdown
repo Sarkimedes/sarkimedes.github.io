@@ -82,15 +82,15 @@ function envoy_on_response(response_handle)
 
 The `request_handle` and `response_handle` objects contain information about the HTTP request and response, including headers and the request/response body. The supported methods are documented here:
 
-https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/lua_filter#config-http-filters-lua-stream-handle-api 
+<https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/lua_filter#config-http-filters-lua-stream-handle-api/>
 
 Once this filter is applied to your cluster, you will need to at least restart the Istio proxy that you want to log info from for it to pick up the new filter.
 After this, each HTTP request will result in entries like the following being written to Istio proxy logs:
 
 ```
 2022-07-16T14:56:12.288433Z    info    envoy lua    script log: Request method: GET
-2022-07-16T14:56:12.372937Z    info    envoy lua    script log: Response status: 200    
+2022-07-16T14:56:12.372937Z    info    envoy lua    script log: Response status: 200
 ```
 
-Sample code used in this post can be found here: https://github.com/Sarkimedes/istio-filter-demo
+Sample code used in this post can be found here: <https://github.com/Sarkimedes/istio-filter-demo/>
 

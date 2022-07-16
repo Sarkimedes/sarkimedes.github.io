@@ -10,7 +10,7 @@ They are moving to an automated build/release pipeline for their product, and as
 
 ![Diagram of system architecture showing relation between website, database, encryption cert, and encryption keys](/assets/images/Architecture.PNG)
 
-We settled quite early on on using DAC packages (https://docs.microsoft.com/en-us/sql/relational-databases/data-tier-applications/data-tier-applications?view=sql-server-ver15#dac-concepts) to deploy the databases out.
+We settled quite early on on using DAC packages (<https://docs.microsoft.com/en-us/sql/relational-databases/data-tier-applications/data-tier-applications?view=sql-server-ver15#dac-concepts/>) to deploy the databases out.
 There's a few advantages to these: 
 - Database objects can be defined in Visual Studio and managed in there, as well as being source controlled
 - DACPACs are declarative and for the most part idempotent (although some care needs to be taken to ensure that this is still the case when pre- and post- deployment scripts are added to the mix)
