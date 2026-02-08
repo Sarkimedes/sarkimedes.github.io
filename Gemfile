@@ -18,12 +18,11 @@ group :jekyll_plugins do
 end
 
 
-# github-pages dependencies - add these temporarily for when we remove the github-pages gem
+# github-pages/jekyll dependencies
 gem "github-pages-health-check"
-gem "jekyll"
+gem "jekyll", "~> 4.4"
 gem "jekyll-avatar"
 gem "jekyll-coffeescript"
-#gem "jekyll-commonmark-ghpages"
 gem "jekyll-default-layout"
 gem "jekyll-gist"
 gem "jekyll-github-metadata"
@@ -35,13 +34,13 @@ gem "jekyll-readme-index"
 gem "jekyll-redirect-from"
 gem "jekyll-relative-links"
 gem "jekyll-remote-theme"
-gem "jekyll-sass-converter"
+gem "jekyll-sass-converter", "~> 2.2" # Pin due to issuees with sass deprecation: https://github.com/jekyll/jekyll-sass-converter/issues/145#issuecomment-1363069829
 gem "jekyll-seo-tag"
 gem "jekyll-sitemap"
 gem "jekyll-titles-from-headings"
 gem "jemoji"
 gem "kramdown"
-gem "kramdown-parser-gfm", "1.1.0"
+#gem "kramdown-parser-gfm"
 gem "liquid"
 gem "mercenary"
 
