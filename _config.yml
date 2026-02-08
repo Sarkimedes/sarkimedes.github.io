@@ -24,6 +24,8 @@ author: Peter Roberts
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  sarkimedes
+repository: Sarkimedes/sarkimedes.github.io
+
 
 # Build settings
 theme: minima
