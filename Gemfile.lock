@@ -116,47 +116,6 @@ GEM
       jekyll (>= 3.8, < 5.0)
     jekyll-sitemap (1.4.0)
       jekyll (>= 3.7, < 5.0)
-    jekyll-swiss (1.0.0)
-    jekyll-theme-architect (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-cayman (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-dinky (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-hacker (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-leap-day (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-merlot (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-midnight (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-minimal (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-modernist (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-primer (0.6.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-github-metadata (~> 2.9)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-slate (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-tactile (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
-    jekyll-theme-time-machine (0.2.0)
-      jekyll (> 3.5, < 5.0)
-      jekyll-seo-tag (~> 2.0)
     jekyll-titles-from-headings (0.5.3)
       jekyll (>= 3.3, < 5.0)
     jekyll-watch (2.2.1)
@@ -270,20 +229,6 @@ DEPENDENCIES
   jekyll-sass-converter (= 1.5.2)
   jekyll-seo-tag (= 2.8.0)
   jekyll-sitemap (= 1.4.0)
-  jekyll-swiss (= 1.0.0)
-  jekyll-theme-architect (= 0.2.0)
-  jekyll-theme-cayman (= 0.2.0)
-  jekyll-theme-dinky (= 0.2.0)
-  jekyll-theme-hacker (= 0.2.0)
-  jekyll-theme-leap-day (= 0.2.0)
-  jekyll-theme-merlot (= 0.2.0)
-  jekyll-theme-midnight (= 0.2.0)
-  jekyll-theme-minimal (= 0.2.0)
-  jekyll-theme-modernist (= 0.2.0)
-  jekyll-theme-primer (= 0.6.0)
-  jekyll-theme-slate (= 0.2.0)
-  jekyll-theme-tactile (= 0.2.0)
-  jekyll-theme-time-machine (= 0.2.0)
   jekyll-titles-from-headings (= 0.5.3)
   jemoji (= 0.12.0)
   kramdown (= 2.3.2)
@@ -350,20 +295,6 @@ CHECKSUMS
   jekyll-sass-converter (1.5.2) sha256=53773669e414dc3bb070113befacb808576025a28cfa4a4accc682e90a9c1101
   jekyll-seo-tag (2.8.0) sha256=3f2ed1916d56f14ebfa38e24acde9b7c946df70cb183af2cb5f0598f21ae6818
   jekyll-sitemap (1.4.0) sha256=0de08c5debc185ea5a8f980e1025c7cd3f8e0c35c8b6ef592f15c46235cf4218
-  jekyll-swiss (1.0.0) sha256=c299a855dca881fe868f21545c5489be50ddfbc0d54a80e8dbeb5a2ddc4888a3
-  jekyll-theme-architect (0.2.0) sha256=7275d3dcaa6b34fcf92f2fe5cee92d49d66706d3b523003b1e67e9c668ff0440
-  jekyll-theme-cayman (0.2.0) sha256=3c5f14f9c72a8eb03ecc74f9a3e5ecbbc55f9381339978b42dec216921865f2a
-  jekyll-theme-dinky (0.2.0) sha256=720b257091f0de3aa9394b25fd97d1b2b12cfaf00e060aff170f60e218a32c7c
-  jekyll-theme-hacker (0.2.0) sha256=816bf9f992ded0b1e1e69d8dece2574e8480efb5e9f84a2e1ac83bd717b8f78a
-  jekyll-theme-leap-day (0.2.0) sha256=921ea8305ae0285a881c9aa9dbe2375ed6f404b4f90067458e596891ef5ac7d1
-  jekyll-theme-merlot (0.2.0) sha256=cbf2b21b62423561ca5b62e406dbb08f085e3a45daa7b3b4b9b3f24d08ded545
-  jekyll-theme-midnight (0.2.0) sha256=009ff367350e83ff6095d98837bb411adb07b59a76f59f1d4a33ef927bb391de
-  jekyll-theme-minimal (0.2.0) sha256=a225210c35573ad2c9e57b81f16f678ca6c314394ec692502ccc6189d7e52d82
-  jekyll-theme-modernist (0.2.0) sha256=4be775bc5edd53864c5e40c000c34db0dfd82dac800cff50371ef11da66dfbcf
-  jekyll-theme-primer (0.6.0) sha256=ce27282798217eb0957ba01ab3bf12996476348b625736fa8448f7a1b8a307b3
-  jekyll-theme-slate (0.2.0) sha256=5e40909de712bbbefbc7a29f17c55bffa326c222f0a13ee1656229a7d43c3439
-  jekyll-theme-tactile (0.2.0) sha256=b7861b48aed5b2385d7a146b13f31cb6f37afe3107f4a6b93b1c932b2d242652
-  jekyll-theme-time-machine (0.2.0) sha256=bc3490a7eccfc24ca671780c9d4f531500936a361690020b19defe6105d74fe2
   jekyll-titles-from-headings (0.5.3) sha256=77366754e361ea7b5d87881f5b1380835f5ce910c240a4d9ac2d7afe86d28481
   jekyll-watch (2.2.1) sha256=bc44ed43f5e0a552836245a54dbff3ea7421ecc2856707e8a1ee203a8387a7e1
   jemoji (0.12.0) sha256=e9b2b129b393b190cf78d51bc4e178e2bf30aa8e9f1a587b366e978fb35d5d27
