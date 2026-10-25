@@ -1,0 +1,63 @@
+---
+layout: post
+title:  "BizTalk 2016 throttling due to database size"
+date:   2019-09-15 11:18:00 +0100
+categories: Azure Bicep Security DevOps
+---
+
+# THe problem
+
+I have a website that I host behind an Azure App Gateway. Naturally, I want a domain name for this, and I want to be able to use HTTPS for it - meaning that I need a certificate. I want to make sure this certificate automatically renews, because I don't want to spend any more time than necessary updating certs.
+Additionally, for the purposes of this exercise I don't have direct control of the DNS zone for my domain - so I am handling DNS changes out of band.
+
+- [ ] Insert architecture diagram here showing my site, app gateway, and ingress into it.
+
+# Enter App Service Certificates
+
+Azure App Service Certificates are certificates you can create in Azure, and the platform will take care of renewing them for you.
+Despite the name, these aren't restricted to being used with App Service websites - they can also be used with an Azure App Gateway or with Azure Front Door. This post will talk about App Gateway, but the process to use them with Front Door is pretty much the same.
+
+Do not get them confused with App Service Managed Certificates - those _are_ tied to a particular web app, and can't be used for this (for reference, those are the free certificates that you create directly from a Web App, while the ones we're talking about are separate resources entirely).
+
+These are issued by GoDaddy, and are not the cheapest option - $70 USD/year buys you a cert for a single (sub)domain, with a year's worth of automatic renewals baked into that price. (Translate that into whatever currency you use, although the charge was reported as coming from the US when I looked at my Azure billing, so it is a fair assumption that the actual transaction is handled over there).
+
+So, job done, right? You have paid for a certificate, so Azure will just issue it and start automatically renewing it for you? Nope - first you have to perform domain validation.  
+
+# How domain validation works
+
+When you create a certificate, you need to prove that you own the domain for it (or at least the domain owner has authorized you to issue certificates for them).  To allow you to do this, Azure will generate a domain verification token for you when you request a certificate. You will need to use this token and present it in one of a few different places to verify that your domain is in fact yours. This token needs to be in place and up to date at the point Azure tries to issue or renew your certificate - if it's not there, no cert for you.
+
+This isn't a one-and-done process. It currently needs to be performed once every 198 days (tying into industry guidelines that say this period needs to be 200 days or less), but this is decreasing over the next few years - after March 2029 you will get a new token and need to put that in place every 10 days or less due to changes in industry standards (https://knowledge.digicert.com/alerts/domain-validation-reuse-changes-in-2026). 
+
+There are multiple options for domain verification, but because we are not tying our certificate to a web app, that leaves us with these two:
+
+## Option 1: TXT record
+
+You can add a special TXT record in DNS for your domain/subdomain. When Azure tries to issue or renew your certificate, it will check for a TXT record in DNS matching your domain verification token.
+
+## Option 2: HTML page
+
+This option requires you to put an HTML page at a particular path on your site, and make it accessible via HTTP (as it needs to be accessible before a certificate has been issued for the site via HTTPS). 
+With App Service certificates, the path is `http://<domain>/.well-known/pki-validation/godaddy.html`.
+The contents of this file will need to be the domain validation token that Azure has issued for you.
+
+This is the option we're going with for this blog post.
+
+For example, my site is at `https://cert-test.peterwynroberts.com`, so my HTML page is at `http://cert-test.peterwynroberts.com/.well-known/pki-validation/godaddy.html`. 
+
+# Our setup
+
+
+
+# Final thoughts
+
+There are a whole plethora of options for fronting up a website with a certificate - far too many for me to go into here.
+This way of doing it makes sense for a particular use case where:
+- I need something that I can tie into an Azure App Gateway
+- The DNS zone linked to my custom domain is handled elsewhere, and I have limited options for automating it
+
+If you have control and automation around your DNS zone, I would probably go with the TXT validation option (instead of setting up the static site, add a specially-constructed TXT record to your DNS zone). Remember that the domain validation just has to be up to date at the point that Azure tries to renew the cert, so you can afford a slight delay in DNS propagation time here.
+If your CA supports the ACME protocol, then using certbot or a similar client is also a cheaper option (as long as you don't mind having one more thing to manage) - https://github.com/AdapptOnAzure/Azure-Automated-ACME has an example using an Azure Function to perform ACME requests, which is worth checking out. 
+
+
+- [ ] To Do: Capture screenshot of DNS validation options on a fresh cert
