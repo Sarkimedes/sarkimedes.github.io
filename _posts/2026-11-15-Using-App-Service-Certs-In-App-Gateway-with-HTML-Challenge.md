@@ -6,7 +6,7 @@ categories: Azure
 mermaid: true
 ---
 
-# THe problem
+# The problem
 
 I have a website that I host behind an Azure App Gateway. Naturally, I want a domain name for this, and I want to be able to use HTTPS for it - meaning that I need a certificate. I want to make sure this certificate automatically renews, because I don't want to spend any more time than necessary updating certs.
 Additionally, for the purposes of this exercise I don't have direct control of the DNS zone for my domain - so I am handling DNS changes out of band.
@@ -107,13 +107,14 @@ flowchart TD
 
 </div>
 
-## Setup using Bicep
+> Once the certificate and HTTPS listener is fully deployed, we can set up an additional path-based rule to redirect HTTP traffic not intended for `./well-known/pki-validation/godaddy.html` to HTTPS.
 
+## Setup using Bicep
 
 ### Step 0: Make sure resource providers are registered and fetch Microsoft.Azure.CertificateRegistration object ID
 
-The certiticate will be linked to a key vault and imported into the vault automatically. 
-The identity that's used for this is the Microsoft.Azure.CertificateRegistration service principal. This should be created in Entra as long as the `Microsoft.CertficateRegistration` resource provider is registered.
+The certificate will be linked to a key vault and imported into the vault automatically. 
+The identity that's used for this is the Microsoft.Azure.CertificateRegistration service principal. This should be created in Entra as long as the `Microsoft.CertificateRegistration` resource provider is registered.
 To enable the resource provider to add the certificate to the Key Vault, we will need to grant read/write access to secrets (e.g. by granting it the `Key Vault Secrets Officer` built-in role on our Key Vault).
 The application (client ID) is always `ea9f3de1-5e71-48f6-8f96-f3312841e295`.
 When using Bicep to set the permissions, you will need to find the object ID of the principal, which varies between Entra tenants - search Entra for `ea9f3de1-5e71-48f6-8f96-f3312841e295`, and then copy the object ID.
@@ -129,6 +130,7 @@ The first time our Bicep runs, it will deploy our base resources:
 - Gateway
 - App Service
 - Virtual Network
+- Storage Accout
 
 and it will create a new `CertificateOrder` resource - this kicks off a request to GoDaddy to issue us a certificate, and will output a domain verification token.
 
@@ -168,8 +170,7 @@ It will also put a placeholder into the key vault for our new certificate, but w
 
 The first time round, our application gateway will only deploy the HTTP listener - we also need to make sure the health probe is set up so it looks for a file at /.well-known/pki-validation/godaddy.html, and point it at the static site as a backend.
 
-To set up an Azure Storage account as a static site, we need to use a `deploymentScript` resource to enable the feature. We can use this to populate `godaddy.html` as well.
-
+To set up an Azure Storage account as a static site, we need to use a `deploymentScript` resource to enable the feature. We can use this to populate `godaddy.html` as well - the `verificationToken` comes from the output from the `certificateOrder` resource:
 
 
 ```bicep
@@ -196,6 +197,20 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     arguments: '-ResourceGroupName "${resourceGroup().name}" -StorageAccountName "${accountName}" -VerificationToken "${verificationToken}"'
   }
 }
+```
+
+```
+// Module call for pki-static-site in main.bicep
+module storageSite 'modules/pki-static-site.bicep' = {
+  name: 'storageSiteDeployment'
+  params: {
+    location: location
+    accountName: storageAccountName
+    skuName: 'Standard_LRS'
+    verificationToken: certificateOrder.properties.domainVerificationToken
+  }
+}
+
 ```
 
 ```powershell
@@ -264,6 +279,8 @@ Now we have a certificate, we need to attach it to the gateway. The way we do th
 The way the App Gateway resource is constructed in Bicep is as a single resource, so we effectively need to re-run that deployment again to add the new HTTPS listener and point it to our actual website backend. 
 We will need a deployment flag so that we can specify whether or not to attempt to deploy the gateway with a certificate on any given run - this is important as the HTTPS listener needs a valid certificate to have been issued so it needs to be `false` on 1st run.
 
+>  The App Gateway’s User-Assigned Managed Identity also needs the Key Vault Secrets User role (or secret GET permission) to retrieve the cert from Key Vault.
+
 ```bicep
 // SSL certificate in App Gateway with KV reference:
 sslCertificates: hasSslCert ? [
@@ -303,7 +320,7 @@ httpListeners: concat([
     ] : [])
 ```
 
-```
+```bicep
 // routing rule, linking listener to web app backend
 requestRoutingRules: concat([
       {
@@ -331,11 +348,13 @@ requestRoutingRules: concat([
 
 Once this is done, you should see your actual site come up. The site will report that it has a valid HTTPS certificate, issued by GoDaddy.
 
-### Ongoing maintenance
+## Ongoing maintenance
 
-We need to ensure that our domain verification token will, so set up a nightly build/cron job to fetch the verification token and set our `godaddy.html` file up with it:
+We need to ensure that our domain verification token remains up to date - every 198 days, we will get a new token (and this interval will eventually decrease to every 10 days). We need to make sure we are presenting the new token at the point the certificate attempts to renew, or automatic renewal will fail.
 
-```
+To automate this, set up a scheduled job to fetch the verification token and set our `godaddy.html` file up with it e.g. using an Azure DevOps/GitHub Actions pipeline.
+
+```powershell
 # 1. Fetch domain verification token
 $token = az resource show `
     --resource-group $ResourceGroupName `
@@ -349,7 +368,6 @@ if ([string]::IsNullOrWhiteSpace($token)) {
 }
 
 Write-Host "Domain Verification Token : $token" -ForegroundColor Green
-Write-Host "Key Vault Secret Name     : $secretName" -ForegroundColor Green
 
 # 2. Write token to local file and upload to storage account $web container
 Set-Content -Path $OutputFile -Value $token -NoNewline
@@ -361,7 +379,7 @@ az storage blob upload `
     --file $OutputFile `
     --content-type 'text/html' `
     --overwrite `
-    --auth-mode key `
+    --auth-mode login`
     --output none
 ```
 
