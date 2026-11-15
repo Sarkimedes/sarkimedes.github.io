@@ -109,6 +109,7 @@ flowchart TD
 
 ## Setup using Bicep
 
+
 ### Step 0: Make sure resource providers are registered and fetch Microsoft.Azure.CertificateRegistration object ID
 
 The certiticate will be linked to a key vault and imported into the vault automatically. 
@@ -119,6 +120,9 @@ When using Bicep to set the permissions, you will need to find the object ID of 
 
 
 ### Step 1: Initial deployment
+
+> NOTE: All code samples below are taken from the repo <https://github.com/Sarkimedes/ app-gateway-cert-autorenew>
+
 
 The first time our Bicep runs, it will deploy our base resources:
 - Key Vault
@@ -234,7 +238,9 @@ finally {
 ```
 
 
-This will result in our site now serving the token to the outside world, proving that it is our domain. The exact path can vary if your AGW routing config needs to be different (e.g. if you have other sites also needing HTTP listeners) - the hard requirement is that from the outside world, the file appears to be coming from `http://<domain>/.well-known/pki-validation/godaddy.html`.
+This will result in our site now serving the token to the outside world, proving that it is our domain. 
+
+> The exact path can vary if your AGW routing config needs to be different (e.g. if you have other sites also needing HTTP listeners) - the hard requirement is that from the outside world, the file appears to be coming from `http://<domain>/.well-known/pki-validation/godaddy.html`.
 
 
 ### Step 2: DNS
