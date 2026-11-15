@@ -122,7 +122,7 @@ When using Bicep to set the permissions, you will need to find the object ID of 
 
 ### Step 1: Initial deployment
 
-> NOTE: All code samples below are taken from the repo <https://github.com/Sarkimedes/ app-gateway-cert-autorenew>
+> NOTE: All code samples below are taken from the repo <https://github.com/Sarkimedes/app-gateway-cert-autorenew>
 
 
 The first time our Bicep runs, it will deploy our base resources:
